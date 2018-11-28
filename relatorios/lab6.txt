@@ -1,0 +1,65 @@
+﻿library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+
+entity main is
+  Port ( clk : in STD_LOGIC;
+         A : in STD_LOGIC_VECTOR(3 downto 0);
+         B : in STD_LOGIC_VECTOR(3 downto 0);
+        
+         an : out STD_LOGIC_VECTOR (3 downto 0);
+         seg : out STD_LOGIC_VECTOR (0 to 6));
+end main;
+
+
+architecture Behavioral of main is
+
+
+signal contador : STD_LOGIC_VECTOR (27 downto 0) := (others => '0');
+signal sel_seg : STD_LOGIC_VECTOR (3 downto 0);
+signal  mux_clock : STD_LOGIC;
+signal s_t: STD_LOGIC_VECTOR(3 downto 0);
+begin
+
+
+process(clk)
+begin
+
+
+if rising_edge(clk) then
+contador <= contador +1;
+end if;
+
+
+mux_clock <= contador(17);
+
+
+end process;
+
+
+s_t <= A when (mux_clock = '0') else B;
+
+
+
+
+    with s_t select
+        seg <= "0000001" when "0000",
+               "1001111" when "0001",
+               "0010010" when "0010",
+               "0000110" when "0011",
+               "1001100" when "0100",
+               "0100100" when "0101",
+               "0100000" when "0110",
+               "0001111" when "0111",
+               "0000000" when "1000",
+               "0000100" when others;
+               
+an(0)<= mux_clock;
+an(1) <= not mux_clock;
+an(2) <= '1';
+an(3) <= '1';
+
+
+end Behavioral;
